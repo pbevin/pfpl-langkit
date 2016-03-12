@@ -1,0 +1,186 @@
+$main-heading-green: #5bdb84;
+$heading-blue: #5bb7db;
+$black: #000;
+$dark: #202020;
+$grey: #999;
+$white: #fff;
+$border-grey: #999;
+
+html {
+  background: $black;
+}
+
+body {
+  background: $black;
+  color: $white;
+  font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -moz-font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  font-weight: 300;
+  line-height: 1.4em;
+  margin: 0 auto;
+  width: 90%;
+  min-width: 1024px;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+.editor {
+  float: left;
+  width: 50%;
+  min-width: 480px;
+
+  .ace-ambiance .ace_scroller {
+    box-shadow: none;
+  }
+}
+
+pre {
+  background: $dark;
+  color: $white;
+  font-family: monaco, Consolas, "Lucida Console", monospace;
+  font-size: 14px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  line-height: 20px;
+  margin: 0;
+  padding: 10px;
+  width: 100%;
+}
+
+h1 {
+  color: $main-heading-green;
+}
+
+h2 {
+  color: $heading-blue;
+}
+
+button {
+  margin: 0;
+  margin-top: 10px;
+  background: none;
+  border: 2px solid $border-grey;
+  color: $grey;
+  cursor: pointer;
+  outline: none;
+  padding: 6px 10px 7px;
+  text-transform: uppercase;
+}
+
+.repl {
+  float: right;
+  height: 640px;
+  overflow-y: auto;
+  width: 50%;
+  min-width: 480px;
+}
+
+.repl-component {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  background-color: black;
+}
+
+/* The inner console element. */
+.jqconsole {
+  padding: 10px;
+}
+
+/* The cursor. */
+.jqconsole-cursor {
+  background-color: #999;
+}
+
+/* The cursor color when the console looses focus. */
+.jqconsole-blurred .jqconsole-cursor {
+  background-color: #666;
+}
+
+/* The current prompt text color */
+.jqconsole-prompt {
+  color: #0d0;
+}
+
+.jqconsole-prompt-text {
+  color: #ff0;
+}
+
+/* The command history */
+.jqconsole-old-prompt {
+  color: #0b0;
+  font-weight: normal;
+}
+
+/* The text color when in input mode. */
+.jqconsole-input {
+  color: #dd0;
+}
+
+/* Previously entered input. */
+.jqconsole-old-input {
+  color: #bb0;
+  font-weight: normal;
+}
+
+/* The text color of the output. */
+.jqconsole-output {
+  color: white;
+}
+
+.jqconsole-error {
+  color: #f33;
+}
+
+.jqconsole-cursor {
+  background: $grey;
+  border: 1px solid $grey;
+}
+
+.jqconsole-blurred .jqconsole-cursor {
+  background: $dark;
+}
+
+#app .ace_gutter {
+  color: #ccc;
+}
+
+.repl-typeof {
+  color: #999;
+}
+
+.repl-trace {
+  display: block;
+  color: #999;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.repl pre {
+  white-space: pre-wrap;
+}
+
+.repl-options {
+  float: right;
+  margin-top: -5px;
+  margin-left: 20px;
+}
+
+.repl-options label {
+  display: block;
+}
+
+.cb {
+  margin-right: 6px;
+}
