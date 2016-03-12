@@ -1,3 +1,5 @@
+![screenshot](media/screenshot.png)
+
 A web playground of Gödel's System T. This makes a lot more sense if you read chapter 9 of
 [Pracical Foundations for Programming Lanugages](https://www.cs.cmu.edu/~rwh/), 2nd edition.
 
