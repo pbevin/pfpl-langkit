@@ -60,20 +60,12 @@ function prettyPlus(n, expr, opts, prec) {
     if (expr[0] === "@num") {
       return String(n + expr[1]);
     } else {
-      return parens(prec > 6, `${n} + ${pretty(expr, opts, 6)}`);
+      return parens(prec > 6, `${n} + ${pretty(expr, opts, 0)}`);
     }
   } else {
     const inner = pretty(expr, opts, expr[1]);
     return replicate(n, "S(") + inner + replicate(n, ")");
   }
-}
-
-function replicate(n, str) {
-  let result = "";
-  for (let i = 0; i < n; i++) {
-    result = result + str;
-  }
-  return result;
 }
 
 function prettyLambda(arg, expr, type, opts, prec) {
@@ -93,6 +85,14 @@ function prettyApp(fn, arg, opts, prec) {
 function prettyRec(e0, x, y, e1, e, opts, prec) {
   const p0 = pretty(e0, opts, 0);
   const p1 = pretty(e1, opts, 0);
-  const p = parens(0, pretty(e, opts, 0));
+  const p = parens(prec > 7, pretty(e, opts, 7));
   return parens(prec > 0, `rec ${p} { Z -> ${p0} | S(${x}) with ${y} -> ${p1} }`);
+}
+
+function replicate(n, str) {
+  let result = "";
+  for (let i = 0; i < n; i++) {
+    result = result + str;
+  }
+  return result;
 }

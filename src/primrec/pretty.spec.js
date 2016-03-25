@@ -52,12 +52,25 @@ describe("pretty", () => {
   });
 
   it("displays a rec expression", () => {
-    const expr = "rec k { Z -> 1 | S(m) with n -> mult(m)(n) }"
+    const expr = "rec k { Z -> 1 | S(m) with n -> mult(m)(n) }";
     expect(pretty(parse(expr), { decimal: true })).to.eq(expr);
   });
 
   it("displays a rec expression with a number", () => {
-    const expr = "rec 1 { Z -> 1 | S(m) with n -> mult(m)(n) }"
+    const expr = "rec 1 { Z -> 1 | S(m) with n -> mult(m)(n) }";
     expect(pretty(parse(expr), { decimal: true })).to.eq(expr);
+  });
+
+  it("displays a rec expression of a rec expression", () => {
+    const expr = "rec (rec 3 { Z -> 1 | S(m) with n -> n }) { Z -> 1 | S(m) with n -> mult(m)(n) }";
+    expect(pretty(parse(expr), { decimal: true })).to.eq(expr);
+  });
+
+  it("displays a rec of a plus", () => {
+    const expr = "rec S(S(k)) { Z -> 1 | S(m) with n -> mult(m)(n) }";
+    expect(pretty(parse(expr), { decimal: true })).to.eq(
+      "rec (2 + k) { Z -> 1 | S(m) with n -> mult(m)(n) }"
+    );
+
   });
 });
