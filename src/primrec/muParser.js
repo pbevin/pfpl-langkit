@@ -16,7 +16,7 @@ const parens = p => lp.then(p).skip(rp);
 const lb = tok("{");
 const rb = tok("}");
 const pipe = tok("|");
-const ident = lexeme(regex(/[a-z]\w*/));
+const ident = lexeme(regex(/(?!rec\W)[a-z]\w*/));
 const type = lexeme(regex(/[A-Z]\w*/));
 const lambda = tok("\\");
 const colon = tok(":");
