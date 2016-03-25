@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { step, subst, isVal } from "./dynamics";
+import { step, subst, isVal, $pred } from "./dynamics";
 import { muExpr } from "./muParser";
 import pretty from "./pretty";
 
@@ -49,7 +49,7 @@ describe("step()", () => {
       muExpr("S(x)"), { x: muExpr("2") }
     )).to.eql({
       status: "step",
-      rules: [ "9.3(a)", "expand variable x" ],
+      rules: [ "Expand inside S [9.3(a)]", "expand variable x" ],
       expr: muExpr("S(2)")
     });
   });
@@ -57,7 +57,7 @@ describe("step()", () => {
   it("steps f in f(a) if f is not a value", () => {
     expect(step(muExpr("f(a)"), { f: muExpr("\\a -> S(a)") })).to.eql({
       status: "step",
-      rules: [ "9.3(b)", "expand variable f" ],
+      rules: [ "Expand function [9.3(b)]", "expand variable f" ],
       expr: muExpr("(\\a -> S(a))(a)")
     });
   });
@@ -65,7 +65,7 @@ describe("step()", () => {
   it("steps a in f(a) if a is not a value", () => {
     expect(step(muExpr("(\\a -> S(a))(y)"), { y: muExpr("10") })).to.eql({
       status: "step",
-      rules: [ "9.3(c)", "expand variable y" ],
+      rules: [ "Expand argument [9.3(c)]", "expand variable y" ],
       expr: muExpr("(\\a -> S(a))(10)")
     });
   });
@@ -73,7 +73,7 @@ describe("step()", () => {
   it("substitutes the lambda if f and a are both values", () => {
     expect(step(muExpr("(\\a -> S(a))(1)"))).to.eql({
       status: "step",
-      rules: [ "9.3(d)" ],
+      rules: [ "Apply λ [9.3(d)]" ],
       expr: muExpr("S(1)")
     });
   });
@@ -81,7 +81,7 @@ describe("step()", () => {
   it("bottoms out the base case of a recursion", () => {
     expect(step(muExpr("rec 0 { Z -> a | S(n) with m -> b }"))).to.eql({
       status: "step",
-      rules: [ "9.3(f)" ],
+      rules: [ "Take Z branch [9.3(f)]" ],
       expr: muExpr("a")
     });
   });
@@ -92,7 +92,7 @@ describe("step()", () => {
     );
     expect(result).to.eql({
       status: "step",
-      rules: [ "9.3(g)" ],
+      rules: [ "Take S branch [9.3(g)]" ],
       expr: muExpr("1")
     });
   });
@@ -103,7 +103,7 @@ describe("step()", () => {
     );
     expect(result.status).to.eq("step");
     expect(pretty(result.expr, { decimal: true })).to.eq(
-      "1 + (rec 1 { Z -> a | S(n) with m -> 1 + m })"
+      "1 + rec 1 { Z -> a | S(n) with m -> 1 + m }"
     );
   });
 
@@ -114,7 +114,7 @@ describe("step()", () => {
     );
     expect(result).to.eql({
       status: "step",
-      rules: [ "9.3(e)", "expand variable k" ],
+      rules: [ "Step recursion count [9.3(e)]", "expand variable k" ],
       expr: muExpr("rec 3 { Z -> a | S(n) with m -> S(m) }")
     });
   });
@@ -132,10 +132,12 @@ describe("step()", () => {
     it("does not step the argument of a function application", () => {
       expect(step(muExpr("(\\a -> S(a))(y)"), { }, { lazy: true })).to.eql({
         status: "step",
-        rules: [ "9.3(d)" ],
+        rules: [ "Apply λ [9.3(d)]" ],
         expr: muExpr("S(y)")
       });
     });
+
+
   });
 });
 
@@ -212,4 +214,22 @@ describe("subst(exp, x, a)", () => {
       muExpr("rec a { Z -> x | S(n) with m -> y }")
     );
   })
+});
+
+describe("$pred", () => {
+  it("handles simple numeric cases", () => {
+    expect($pred(muExpr("1"))).to.eql(muExpr("0"));
+    expect($pred(muExpr("2"))).to.eql(muExpr("1"));
+    expect($pred(muExpr("4"))).to.eql(muExpr("3"));
+    expect($pred(muExpr("44"))).to.eql(muExpr("43"));
+  });
+
+  it("handles S(expr) cases", () => {
+    expect($pred(muExpr("S(k)"))).to.eql(muExpr("k"));
+    expect($pred(muExpr("S(S(k))"))).to.eql(muExpr("S(k)"));
+  });
+
+  it("refuses to calculate 0 - 1", () => {
+    expect(() => $pred(muExpr("0"))).to.throw("Attempt to find predecessor of 0");
+  });
 });

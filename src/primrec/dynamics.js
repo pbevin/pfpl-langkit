@@ -112,7 +112,7 @@ function stepVariableExpansion(expr, env) {
 function stepPlus(expr, env, opts) {
   const result = sstep(expr[2], env, opts);
   return {
-    rules: [ "9.3(a)", ...result.rules ],
+    rules: [ "Expand inside S [9.3(a)]", ...result.rules ],
     expr: $plus(expr[1], result.expr)
   };
 }
@@ -124,7 +124,7 @@ function stepApp(expr, env, opts) {
   if (!isVal(f)) {
     const result = sstep(f, env, opts);
     return {
-      rules: [ "9.3(b)", ...result.rules ],
+      rules: [ "Expand function [9.3(b)]", ...result.rules ],
       expr: $app(result.expr, a)
     };
   }
@@ -132,7 +132,7 @@ function stepApp(expr, env, opts) {
   if (!opts.lazy && !isVal(a)) {
     const result = sstep(a, env, opts);
     return {
-      rules: [ "9.3(c)", ...result.rules ],
+      rules: [ "Expand argument [9.3(c)]", ...result.rules ],
       expr: $app(f, result.expr)
     };
   }
@@ -142,7 +142,7 @@ function stepApp(expr, env, opts) {
     const exp = f[2];
 
     return {
-      rules: [ "9.3(d)" ],
+      rules: [ "Apply λ [9.3(d)]" ],
       expr: subst(exp, x, a)
     };
   }
@@ -157,7 +157,7 @@ function stepRec(expr, env, opts) {
   if (isZero(e)) {
     // Rule 9.3(f)
     return {
-      rules: [ "9.3(f)" ],
+      rules: [ "Take Z branch [9.3(f)]" ],
       expr: e0
     };
   }
@@ -165,21 +165,21 @@ function stepRec(expr, env, opts) {
   if (isSucc(e)) {
     const pred = $pred(e);
     return {
-      rules: [ "9.3(g)" ],
+      rules: [ "Take S branch [9.3(g)]" ],
       expr: subst(subst(e1, y, $rec(e0, x, y, e1, pred)), x, pred)
     };
   }
 
   const result = sstep(e, env, opts);
   return {
-    rules: [ "9.3(e)", ...result.rules ],
+    rules: [ "Step recursion count [9.3(e)]", ...result.rules ],
     expr: $rec(e0, x, y, e1, result.expr)
   };
 }
 
-function $pred(expr) {
+export function $pred(expr) {
   if (isPlus(expr)) {
-    if (expr[1] == 0) {
+    if (expr[1] == 1) {
       return expr[2];
     }
 
@@ -187,6 +187,9 @@ function $pred(expr) {
   }
 
   if (isNumber(expr)) {
+    if (expr[1] === 0) {
+      throw new Error("Attempt to find predecessor of 0");
+    }
     return $num(expr[1] - 1);
   }
 
