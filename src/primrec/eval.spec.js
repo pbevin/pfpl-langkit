@@ -1,8 +1,6 @@
 import { expect } from "chai";
 import muEval, { evalExpr } from "./eval";
 import muParser, { muExpr } from "./muParser";
-import pretty from "./pretty";
-import { $z, $succ, $var, $lam, $app, $rec, $define } from "./ast";
 
 const ex = (input, env = {}) => evalExpr(muExpr(input), env);
 
@@ -50,7 +48,7 @@ describe("muEval", () => {
   });
 
   it("includes definitions", () => {
-    const exprs = muParser("two = S(S(Z)); S(two)")
+    const exprs = muParser("two = S(S(Z)); S(two)");
     expect(muEval(exprs)).to.deep.eq(muExpr("3"));
   });
 

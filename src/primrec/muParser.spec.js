@@ -1,7 +1,7 @@
 import chai, { expect } from "chai";
 
 import muParser, { muExpr } from "./muParser";
-import { $z, $num, $succ, $var, $lam, $app, $rec, $define } from "./ast";
+import { $num, $succ, $var, $lam, $app, $rec, $define } from "./ast";
 
 chai.config.truncateThreshold = 1000;
 
@@ -117,7 +117,7 @@ describe("parsing", () => {
     });
 
     it("parses a complicated recursion", () => {
-      const expr = "rec (rec n { Z -> Z | S(k) with m -> k }) { Z -> Z | S(k) with m -> k }"
+      const expr = "rec (rec n { Z -> Z | S(k) with m -> k }) { Z -> Z | S(k) with m -> k }";
 
       expect(muExpr(expr)).to.deep.eq(
         $rec(

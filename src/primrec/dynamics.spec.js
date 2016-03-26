@@ -213,7 +213,7 @@ describe("subst(exp, x, a)", () => {
     )).to.eql(
       muExpr("rec a { Z -> x | S(n) with m -> y }")
     );
-  })
+  });
 });
 
 describe("$pred", () => {
