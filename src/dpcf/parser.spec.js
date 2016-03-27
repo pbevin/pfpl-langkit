@@ -1,9 +1,7 @@
 import chai, { expect } from "chai";
 
 import parseExpr from "./parser";
-import { $num, $var, $lam, $app, $ifz, $fix } from "./ast";
-
-chai.config.truncateThreshold = 1000;
+import { $z, $s, $num, $var, $fun, $app, $ifz, $fix } from "./ast";
 
 describe("dpcf.parser.lispish", () => {
   it("parses an empty program", () => {
@@ -11,23 +9,16 @@ describe("dpcf.parser.lispish", () => {
   });
 
   describe("num()", () => {
-    it("...", () => {
-      expect("z").not.to.match(/(?!(fix|s|z|lambda)\b)[a-z]\w*/i);
-    });
     it("parses z", () => {
-      expect(parseExpr("z")).to.deep.eq($num(0));
+      expect(parseExpr("z")).to.deep.eq($z);
     });
 
     it("parses s(z)", () => {
-      expect(parseExpr("(s z)")).to.deep.eq($num(1));
+      expect(parseExpr("(s z)")).to.deep.eq($s($z));
     });
 
     it("parses unary 2", () => {
-      expect(parseExpr("(s (s z))")).to.deep.eq($num(2));
-    });
-
-    it("parses unary 3", () => {
-      expect(parseExpr("(s (s (s z)))")).to.deep.eq($num(3));
+      expect(parseExpr("(s (s z))")).to.deep.eq($s($s($z)));
     });
 
     it("parses 0", () => {
@@ -65,7 +56,7 @@ describe("dpcf.parser.lispish", () => {
   });
 
   it("parses a lambda", () => {
-    expect(parseExpr("(lambda (x) x)")).to.eql($lam("x", $var("x")));
+    expect(parseExpr("(lambda (x) x)")).to.eql($fun("x", $var("x")));
   });
 
   it("parses a function app", () => {

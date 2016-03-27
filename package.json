@@ -15,10 +15,10 @@
     "prebuild": "npm run clean-dist && npm run build:html",
     "build": "npm run test && babel-node tools/build.js",
     "build:src": "babel-node tools/build.js",
-    "test": "cross-env NODE_ENV=test mocha --reporter spec --compilers js:babel-core/register --require babel-polyfill --recursive \"./src/**/*.spec.js\"",
-    "test:coverage": "istanbul cover _mocha -- -u exports --compilers js:babel-core/register --require babel-polyfill --recursive \"./src/**/*.spec.js\"",
+    "test": "cross-env NODE_ENV=test mocha --reporter spec --compilers js:babel-core/register --require \"src/spec.helper.js\" --recursive \"./src/**/*.spec.js\"",
+    "test:coverage": "istanbul cover _mocha -- -u exports --compilers js:babel-core/register --require \"src/spec.helper.js\" --recursive \"./src/**/*.spec.js\"",
     "test:watch": "npm run test -- --watch",
-    "test:debug": "iron-node node_modules/mocha/bin/_mocha --compilers js:babel-core/register --require babel-polyfill --recursive \"./src/**/*.spec.js\""
+    "test:debug": "iron-node node_modules/mocha/bin/_mocha --compilers js:babel-core/register --require \"src/spec.helper.js\" --recursive \"./src/**/*.spec.js\""
   },
   "author": "Pete Bevin",
   "license": "GPL2",

@@ -1,11 +1,11 @@
 import _ from "lodash";
 import { string, regex, optWhitespace, eof } from "parsimmon";
 import { seqMap, lazy, alt } from "parsimmon";
-import { $z, $num, $succ, $var, $lam, $app, $ifz, $fix } from "./ast";
+import { $z, $num, $s, $var, $fun, $app, $ifz, $fix } from "./ast";
 
 const expr = lazy("expr", () => alt(
   succ.desc("(s [num])"),
-  lam.desc("(lambda ([var]) [expr])"),
+  fun.desc("(lambda ([var]) [expr])"),
   app.desc("([fn] [arg])"),
   ifz.desc("(ifz [value] [zero case] [var] [nonzero case])"),
   fix.desc("(fix [var] [expr])"),
@@ -31,14 +31,14 @@ const atom = alt(
 const succ = form(
   tok("s"),
   expr,
-  (_, e) => $succ(e)
+  (_, e) => $s(e)
 );
 
-const lam = form(
+const fun = form(
   tok("lambda"),
   parens(ident),
   expr,
-  (_, x, e) => $lam(x, e)
+  (_, x, e) => $fun(x, e)
 );
 
 const app = form(
