@@ -20,10 +20,14 @@ export const actions = {
 
   setFlag(flag, value) {
     return { type: "SET_FLAG", flag, value };
+  },
+
+  setLanguage(lang) {
+    return { type: "SET_LANG", lang };
   }
 };
 
-const prelude = `
+const systPrelude = `
 two = S(S(Z));
 three = S(two);
 double = \\n : Nat -> rec n {
@@ -44,15 +48,31 @@ fact = \\n : Nat -> rec n {
 };
 `.trim();
 
+const dpcfPrelude = `
+(define two (s (s z)))
+
+(define plus
+  (fun (x)
+    (fix a
+      (fun (y)
+        (case y
+          (zero x)
+          ((s y1) (s (a y1))))))))
+`.trim();
+
+
 const initialState = {
+  preludes: {
+    dpcf: dpcfPrelude,
+    syst: systPrelude
+  },
   text: "",
-  prelude,
+  lang: "dpcf",
   [Flags.trace]: false,
   [Flags.decimal]: false,
   [Flags.lazy]: false,
   [Flags.force]: false
 };
-
 
 export
 function programReducer(state = initialState, action) {
@@ -61,13 +81,16 @@ function programReducer(state = initialState, action) {
       return { ...state, text: action.text };
 
     case "REVERT_PRELUDE":
-      return { ...state, text: state.prelude };
+      return { ...state, text: state.preludes[state.lang] };
 
     case "TOGGLE_FLAG":
       return { ...state, [action.flag]: !state[action.flag] };
 
     case "SET_FLAG":
       return { ...state, [action.flag]: action.value };
+
+    case "SET_LANG":
+      return { ...state, lang: action.lang, text: state.preludes[action.lang] };
   }
 
   return state;

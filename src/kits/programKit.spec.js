@@ -17,6 +17,10 @@ describe("program reducer", () => {
     expect(initialState.lazy).to.eq(false);
   });
 
+  it("starts in system T", () => {
+    expect(initialState.lang).to.eq("dpcf");
+  });
+
   specify("program text changed", () => {
     const oldState = { text: "123" };
     const action = textChanged("1234");
@@ -25,9 +29,15 @@ describe("program reducer", () => {
   });
 
   specify("reverting the prelude", () => {
-    const oldState = { text: "abc", prelude: "prelude" };
+    const oldState = {
+      lang: "mylang",
+      preludes: {
+        mylang: "prelude for mylang"
+      },
+      text: "abc"
+    };
     const newState = programReducer(oldState, revertPrelude());
-    expect(newState).to.eql({ text: "prelude", prelude: "prelude" });
+    expect(newState.text).to.eq("prelude for mylang");
   });
 
   it("updates flags via setFlag", () => {
@@ -46,5 +56,33 @@ describe("program reducer", () => {
     expect(state.trace).to.eq(true);
     state = programReducer(state, toggleFlag(Flags.trace));
     expect(state.trace).to.eq(false);
+  });
+
+  it("changes the language via setLanguage", () => {
+    let state = {
+      lang: "dpcf",
+      text: "xxx",
+      preludes: {
+        dpcf: "DPCF prelude",
+        syst: "System T prelude"
+      }
+    };
+
+    state = programReducer(state, actions.setLanguage("syst"));
+    expect(state.lang).to.eq("syst");
+  });
+
+  it("changes the prelude when the language changes", () => {
+    let state = {
+      lang: "dpcf",
+      text: "xxx",
+      preludes: {
+        dpcf: "DPCF prelude",
+        syst: "System T prelude"
+      }
+    };
+
+    state = programReducer(state, actions.setLanguage("syst"));
+    expect(state.text).to.eq("System T prelude");
   });
 });

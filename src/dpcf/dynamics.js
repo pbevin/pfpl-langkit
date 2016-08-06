@@ -153,7 +153,7 @@ function stepApply([ _, fn, arg ], opts) {
   };
 }
 
-function stepFix([ _, x, expr ], opts) {
+function stepFix([ _, x, expr ]) {
   return {
     status: "step",
     rule: "Step fix expression [22.4o]",

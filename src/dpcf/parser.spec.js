@@ -1,7 +1,7 @@
 import chai, { expect } from "chai";
 
-import parseExpr from "./parser";
-import { $z, $s, $num, $var, $fun, $app, $ifz, $fix } from "./ast";
+import parseExpr, { parseDefinitions } from "./parser";
+import { $z, $s, $num, $var, $fun, $app, $ifz, $fix, $define } from "./ast";
 
 describe("dpcf.parser.lispish", () => {
   it("parses an empty program", () => {
@@ -47,16 +47,16 @@ describe("dpcf.parser.lispish", () => {
     expect(parseExpr("x")).to.eql($var("x"));
   });
 
-  it("does not parse `lambda` as a variable", () => {
-    expect(() => parseExpr("lambda")).to.throw();
+  it("does not parse `fun` as a variable", () => {
+    expect(() => parseExpr("fun")).to.throw();
   });
 
   it("does not parse `s` as a variable", () => {
     expect(() => parseExpr("s")).to.throw();
   });
 
-  it("parses a lambda", () => {
-    expect(parseExpr("(lambda (x) x)")).to.eql($fun("x", $var("x")));
+  it("parses a fun", () => {
+    expect(parseExpr("(fun (x) x)")).to.eql($fun("x", $var("x")));
   });
 
   it("parses a function app", () => {
@@ -66,10 +66,10 @@ describe("dpcf.parser.lispish", () => {
         $var("x")));
   });
 
-  it("parses ifz", () => {
-    expect(parseExpr("(ifz n 0 x (b x))")).to.eql(
+  it("parses a case statement", () => {
+    expect(parseExpr("(case n (zero a) ((s x) (b x)))")).to.eql(
       $ifz(
-        $num(0),
+        $var("a"),
         "x",
         $app($var("b"), $var("x")),
         $var("n")
@@ -78,11 +78,27 @@ describe("dpcf.parser.lispish", () => {
   });
 
   it ("parses fix", () => {
-    expect(parseExpr("(fix f (lambda (n) (f n)))")).to.eql(
-      $fix(
-        "f",
-        parseExpr("(lambda (n) (f n))")
-      )
+    expect(parseExpr("(fix f (fun (n) (f n)))")).to.eql(
+      $fix("f", parseExpr("(fun (n) (f n))"))
     );
+  });
+});
+
+describe("parseDefinitions", () => {
+  specify("empty input", () => {
+    expect(parseDefinitions("")).to.eql([]);
+  });
+
+  specify("one definition", () => {
+    expect(parseDefinitions("(define x 1)")).to.eql([
+      $define("x", $num(1))
+    ]);
+  });
+
+  specify("two definitions", () => {
+    expect(parseDefinitions("(define x 1) (define y 2)")).to.eql([
+      $define("x", $num(1)),
+      $define("y", $num(2))
+    ]);
   });
 });

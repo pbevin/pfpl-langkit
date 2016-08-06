@@ -24,6 +24,7 @@ class Repl extends Component {
           this.props.onLineEntered(input, jqconsole);
         }
         catch (e) {
+          debugger;
           jqconsole.Write(e.message + "\n", "jqconsole-error");
         }
         startPrompt();

@@ -172,9 +172,9 @@ button {
 }
 
 .repl-options {
-  float: right;
-  margin-top: -5px;
-  margin-left: 20px;
+  vertical-align: top;
+  display: inline-block;
+  width: 180px;
 }
 
 .repl-options label {
